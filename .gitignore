@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.csv
+linear_model.joblib
+forest_model.joblib
+.env
+debug.py
+test.py
