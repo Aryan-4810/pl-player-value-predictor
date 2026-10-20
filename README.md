@@ -3,6 +3,8 @@
 Predicts a Premier League player's Transfermarkt market value from season
 stats and club strength.
 
+## Live demo: https://pl-player-value-predictor.onrender.com
+
 ## Data
 - Transfermarkt dataset on Kaggle ("Football Data from Transfermarkt" by David Cariboo):
   appearances, player_valuations, players, games
