@@ -33,11 +33,13 @@ How the score improved:
 A random split gave an inflated score at first. A time-based split gives an honest estimate.
 
 ## Limitations
-- The model does not know reputation, nationality or injuries.
+- The model does not know reputation, nationality, injuries or potential.
 - Club features come from season-end results, so this estimates value after a season, not before a transfer.
 - `season` is a feature, so the model is not reliable for seasons far beyond 2025.
-- Few high-scoring players aged 33+ in the data, so predictions in that area are weak.
-- Typical error is about 1.5x the true value.
+- Typical error is about 1.5x the true value (MAE 0.41 on the log scale).
+- Residual analysis on the 2023-25 test set shows the model underestimates players whose value is driven by potential or reputation (young prospects
+  such as Isak and Estêvão, ageing stars such as Son and van Dijk), and overestimates some low-value squad players.
+- Predictions are biased low overall (roughly 10-20%) on the test seasons, likely because market values kept inflating beyond the training range.
 
 ## Run
     pip install -r requirements.txt
