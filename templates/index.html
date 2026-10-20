@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PL Player Value Predictor</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Google Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#00e478",
+            "error": "#ffb4ab",
+            "inverse-surface": "#dfe2ee",
+            "on-error-container": "#ffdad6",
+            "on-primary-container": "#007138",
+            "secondary-container": "#00a6e0",
+            "surface-container-low": "#181c24",
+            "outline": "#849585",
+            "surface-tint": "#00e478",
+            "on-background": "#dfe2ee",
+            "error-container": "#93000a",
+            "tertiary-fixed-dim": "#ffb2b7",
+            "on-tertiary": "#67001b",
+            "tertiary": "#fffaf9",
+            "background": "#0f131c",
+            "surface-container-highest": "#31353e",
+            "on-secondary-fixed": "#001e2c",
+            "tertiary-fixed": "#ffdadb",
+            "on-primary-fixed-variant": "#005227",
+            "surface-bright": "#353942",
+            "primary-container": "#00ff87",
+            "on-tertiary-fixed": "#40000d",
+            "on-primary": "#003919",
+            "primary-fixed": "#60ff98",
+            "secondary-fixed-dim": "#7bd0ff",
+            "surface-container": "#1c2028",
+            "on-surface": "#dfe2ee",
+            "surface-variant": "#31353e",
+            "on-tertiary-fixed-variant": "#92002a",
+            "on-secondary-fixed-variant": "#004c69",
+            "inverse-on-surface": "#2c3039",
+            "on-primary-fixed": "#00210c",
+            "primary": "#f1ffef",
+            "on-error": "#690005",
+            "secondary-fixed": "#c4e7ff",
+            "surface-container-lowest": "#0a0e16",
+            "on-secondary-container": "#00374d",
+            "on-secondary": "#00354a",
+            "tertiary-container": "#ffd4d6",
+            "on-tertiary-container": "#c1123e",
+            "surface-container-high": "#262a33",
+            "secondary": "#7bd0ff",
+            "outline-variant": "#3b4b3d",
+            "on-surface-variant": "#b9cbb9",
+            "surface": "#0f131c",
+            "inverse-primary": "#006d36",
+            "surface-dim": "#0f131c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "display-lg-mobile": ["Space Grotesk"],
+            "display-lg": ["Space Grotesk"],
+            "stat-mono": ["JetBrains Mono"],
+            "body-md": ["Geist"],
+            "body-lg": ["Geist"],
+            "label-caps": ["JetBrains Mono"],
+            "title-md": ["Geist"],
+            "body-sm": ["Geist"],
+            "stat-display": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-md": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "display-lg-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["3rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "stat-mono": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "body-md": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+            "body-lg": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "400" }],
+            "label-caps": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "title-md": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }],
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "stat-display": ["2.25rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.04em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Precision custom styling for tactical sports range inputs */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      cursor: pointer;
+      background: #1c2028;
+      border-radius: 9999px;
+      border: 1px solid #3b4b3d;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 20px;
+      width: 20px;
+      border-radius: 4px;
+      background: #00ff87;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px;
+      box-shadow: 0 0 10px rgba(0, 255, 135, 0.6);
+      border: 2px solid #0f131c;
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+    /* Pitch subtle grid texture */
+    .pitch-grid {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(132, 149, 133, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(132, 149, 133, 0.05) 1px, transparent 1px);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col pitch-grid antialiased selection:bg-primary-container selection:text-on-primary-fixed">
+<!-- Shared Component: TopAppBar -->
+<header class="sticky top-0 z-50 bg-surface-container-low shadow-sm backdrop-blur-md">
+<div class="w-full max-w-7xl mx-auto px-margin-mobile md:px-margin flex items-center justify-between h-16">
+<!-- Leading Item & Title Anchor -->
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest border border-outline-variant flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-lg" data-icon="analytics">analytics</span>
+</div>
+<div class="flex flex-col">
+<span class="text-title-md font-title-md font-bold tracking-tight text-primary-container flex items-center gap-1.5">
+            VALUEMETRICS // EPL
+          </span>
+<span class="text-label-caps font-label-caps text-on-surface-variant leading-none">
+            ALGORITHMIC VALUATION ENGINE
+          </span>
+</div>
+</div>
+<!-- Trailing Status Pill & Code Action -->
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container border border-outline-variant text-label-caps font-label-caps text-primary-container flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+          RANDOM FOREST
+        </span>
+<button class="p-1.5 rounded-lg bg-surface-container-highest/60 hover:text-primary transition-colors duration-150 text-on-surface-variant" title="Model Telemetry">
+<span class="material-symbols-outlined text-lg" data-icon="code">code</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Cockpit Viewport (Optimized for Mobile Canvas) -->
+<main class="flex-grow w-full max-w-lg mx-auto px-margin-mobile py-space-md space-y-space-lg">
+<!-- Section 2: Intro Subtitle / Hero Tag -->
+<section class="space-y-space-xs text-left">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-low border border-outline-variant/60">
+<span class="material-symbols-outlined text-sm text-primary-container" data-icon="sports_soccer">sports_soccer</span>
+<span class="text-label-caps font-label-caps text-on-surface-variant tracking-wider">PREMIER LEAGUE BENCHMARK</span>
+</div>
+<h1 class="text-headline-md font-headline-md font-bold tracking-tight text-primary">
+        PL Player Value Predictor
+      </h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+        Estimates a Premier League player's Transfermarkt market value from season stats and club strength. Trained on 2012-2025 data.
+      </p>
+<!-- Telemetry Pills -->
+<div class="pt-space-xs flex flex-wrap items-center gap-2">
+<span class="px-2 py-1 rounded bg-surface-container-highest/60 border border-outline-variant/40 text-label-caps font-label-caps text-primary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="model_training">model_training</span>
+          Random Forest Model
+        </span>
+<span class="px-2 py-1 rounded bg-surface-container-highest/60 border border-outline-variant/40 text-label-caps font-label-caps text-secondary-fixed-dim">
+          R² 0.75 (2023-25 test)
+        </span>
+<span class="px-2 py-1 rounded bg-surface-container-highest/60 border border-outline-variant/40 text-label-caps font-label-caps text-on-surface-variant">
+          N=5,525 Player-Seasons
+        </span>
+</div>
+</section>
+<!-- Section 3: Inputs Form Card -->
+<section class="bg-surface-container-low/90 backdrop-blur-md border border-outline-variant/50 rounded-xl p-space-md shadow-lg space-y-space-md relative overflow-hidden">
+<!-- Glow ambient header line -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary-container/40 to-transparent"></div>
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-base" data-icon="tune">tune</span>
+<h2 class="text-title-md font-title-md text-on-surface">Input Parameters</h2>
+</div>
+<span class="text-label-caps font-label-caps text-on-surface-variant">STAGE 1: FEATURES</span>
+</div>
+<!-- Parameter 1: Position Segmented Switch -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="text-label-caps font-label-caps text-on-surface-variant">PITCH POSITION</label>
+<span class="text-label-caps font-label-caps text-primary-container" id="posSelectedBadge">ATTACK</span>
+</div>
+<div class="grid grid-cols-4 gap-1 p-1 bg-surface-container-lowest rounded-lg border border-outline-variant/40" id="positionGroup">
+<button class="pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 bg-primary-container text-surface-container-lowest font-bold shadow-sm" onclick="setPosition('Attack', this)" type="button">
+            FWD
+          </button>
+<button class="pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 text-on-surface-variant hover:text-on-surface" onclick="setPosition('Midfield', this)" type="button">
+            MID
+          </button>
+<button class="pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 text-on-surface-variant hover:text-on-surface" onclick="setPosition('Defender', this)" type="button">
+            DEF
+          </button>
+<button class="pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 text-on-surface-variant hover:text-on-surface" onclick="setPosition('Goalkeeper', this)" type="button">
+            GK
+          </button>
+</div>
+</div>
+<!-- Parameter 2: Age Slider -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">PLAYER AGE</span>
+<span class="text-stat-mono font-stat-mono text-primary-container font-semibold" id="ageDisplay">24 yrs</span>
+</div>
+<input id="ageInput" max="40" min="17" oninput="updateRange('ageInput', 'ageDisplay', ' yrs')" type="range" value="24"/>
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant/70 text-[10px]">
+<span>17 (Development)</span>
+<span>27 (Peak)</span>
+<span>40 (Veteran)</span>
+</div>
+</div>
+<!-- Parameter 3: Goals & Assists (Adjacent Numeric Steppers) -->
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Goals Stepper -->
+<div class="bg-surface-container-lowest/80 border border-outline-variant/40 rounded-lg p-space-xs space-y-1">
+<div class="flex justify-between items-center px-1">
+<span class="text-label-caps font-label-caps text-on-surface-variant">GOALS</span>
+<span class="text-label-caps font-label-caps text-primary-container">EPL</span>
+</div>
+<div class="flex items-center justify-between gap-1">
+<button class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-primary-container active:scale-90 transition-transform" onclick="stepVal('goalsVal', -1)" type="button">
+<span class="material-symbols-outlined text-base" data-icon="remove">remove</span>
+</button>
+<span class="text-stat-mono font-stat-mono text-lg font-bold text-on-surface" id="goalsVal">14</span>
+<button class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-primary-container active:scale-90 transition-transform" onclick="stepVal('goalsVal', 1)" type="button">
+<span class="material-symbols-outlined text-base" data-icon="add">add</span>
+</button>
+</div>
+</div>
+<!-- Assists Stepper -->
+<div class="bg-surface-container-lowest/80 border border-outline-variant/40 rounded-lg p-space-xs space-y-1">
+<div class="flex justify-between items-center px-1">
+<span class="text-label-caps font-label-caps text-on-surface-variant">ASSISTS</span>
+<span class="text-label-caps font-label-caps text-secondary-fixed-dim">KEY</span>
+</div>
+<div class="flex items-center justify-between gap-1">
+<button class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-secondary-fixed-dim active:scale-90 transition-transform" onclick="stepVal('assistsVal', -1)" type="button">
+<span class="material-symbols-outlined text-base" data-icon="remove">remove</span>
+</button>
+<span class="text-stat-mono font-stat-mono text-lg font-bold text-on-surface" id="assistsVal">8</span>
+<button class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-on-surface hover:text-secondary-fixed-dim active:scale-90 transition-transform" onclick="stepVal('assistsVal', 1)" type="button">
+<span class="material-symbols-outlined text-base" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Parameter 4: Minutes Played Slider -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">MINUTES PLAYED</span>
+<span class="text-stat-mono font-stat-mono text-primary-container font-semibold" id="minsDisplay">2,450 mins (~27 matches)</span>
+</div>
+<input id="minsInput" max="3420" min="450" oninput="updateMins()" step="10" type="range" value="2450"/>
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant/70 text-[10px]">
+<span>450 (Squad)</span>
+<span>1,900 (Regular)</span>
+<span>3,420 (Ever-present)</span>
+</div>
+</div>
+<!-- Parameter 5: Club League Points -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">CLUB LEAGUE POINTS</span>
+<span class="text-stat-mono font-stat-mono text-secondary-fixed-dim font-semibold" id="ptsDisplay">78 pts (UCL Spot)</span>
+</div>
+<input id="ptsInput" max="100" min="10" oninput="updatePts()" type="range" value="78"/>
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant/70 text-[10px]">
+<span>20 (Relegation)</span>
+<span>50 (Midtable)</span>
+<span>90+ (Title Winner)</span>
+</div>
+</div>
+<!-- Parameter 6: Club Goal Difference (-70 to +80) -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">CLUB GOAL DIFFERENCE</span>
+<span class="text-stat-mono font-stat-mono text-primary-container font-semibold" id="gdDisplay">+34 GD</span>
+</div>
+<input id="gdInput" max="80" min="-70" oninput="updateRangeWithSign('gdInput', 'gdDisplay', ' GD')" type="range" value="34"/>
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant/70 text-[10px]">
+<span>-70</span>
+<span>0 (Par)</span>
+<span>+80</span>
+</div>
+</div>
+<!-- Parameter 7: Season Slider (2012 to 2025) -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<span class="text-label-caps font-label-caps text-on-surface-variant">SEASON</span>
+<span class="text-stat-mono font-stat-mono text-on-surface font-semibold" id="seasonDisplay">2024/25</span>
+</div>
+<input id="seasonInput" max="2025" min="2012" oninput="updateSeason()" type="range" value="2024"/>
+<div class="flex justify-between text-label-caps font-label-caps text-on-surface-variant/70 text-[10px]">
+<span>2012/13</span>
+<span>2018/19</span>
+<span>2024/25</span>
+</div>
+</div>
+<!-- CTA Predict Button -->
+<div class="pt-space-xs">
+<button class="w-full py-3.5 px-space-md rounded-xl bg-primary-container text-surface-container-lowest font-headline-md text-base font-bold tracking-tight shadow-[0_0_20px_rgba(0,255,135,0.35)] hover:shadow-[0_0_28px_rgba(0,255,135,0.6)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group" onclick="runPredictionAnimation()" type="button">
+<span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-12" data-icon="bolt">bolt</span>
+<span>⚡ Predict Value</span>
+</button>
+</div>
+</section>
+<!-- Section 4: Valuation Result Card -->
+<section class="bg-surface-container-low/95 border-2 border-primary-container/80 rounded-xl p-space-md shadow-[0_0_30px_-5px_rgba(0,255,135,0.2)] relative space-y-space-md" id="resultCard">
+<!-- Card Header Indicator -->
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-space-xs">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-label-caps font-label-caps text-primary-container font-bold">ESTIMATED VALUATION MATRIX</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary-container/10 text-primary-container text-label-caps font-label-caps border border-primary-container/30">
+          TEST R² 0.75
+        </span>
+</div>
+<!-- Main Display Stat -->
+<div class="text-center py-space-xs space-y-1">
+<span class="text-label-caps font-label-caps text-on-surface-variant block tracking-widest">CALCULATED FAIR MARKET VALUE</span>
+<div class="text-stat-display font-stat-display text-primary-container tracking-tight drop-shadow-[0_0_15px_rgba(0,255,135,0.4)]" id="valuationValue">
+          ...
+        </div>
+<div class="inline-block mt-1">
+<span class="text-label-caps font-label-caps px-3 py-1 rounded-full bg-surface-container-highest/80 border border-outline-variant text-on-surface" id="rangeBadge">
+            Estimated Range: <span class="text-primary-fixed-dim">...</span> – <span class="text-secondary-fixed-dim">...</span>
+</span>
+</div>
+</div>
+<!-- Valuation Tier Badge -->
+<div class="p-space-xs bg-surface-container-lowest/80 border border-primary-container/30 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-lg" data-icon="workspace_premium">workspace_premium</span>
+<span class="text-label-caps font-label-caps text-on-surface font-semibold" id="tierDisplay">Elite Category • Top 10% Premier League</span>
+</div>
+<span class="text-label-caps font-label-caps text-primary-container font-mono">MODEL OUTPUT</span>
+</div>
+<!-- Small Note Error Profile -->
+<div class="p-space-xs rounded bg-surface-container-highest/40 border border-outline-variant/30 flex items-start gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mt-0.5" data-icon="info">info</span>
+<p class="text-body-sm font-body-sm text-on-surface-variant/90 leading-tight">
+          Estimate. Typical error about 1.5x (Random Forest, R² 0.75 on 2023-2025 test data). It does not know reputation, potential or injuries.
+        </p>
+</div>
+</section>
+<!-- Section 5: 'How It Works' Section -->
+<section class="space-y-space-md pt-space-xs">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-title-md font-title-md font-bold text-on-surface">How The Engine Operates</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Computational methodology &amp; econometric architecture</p>
+</div>
+<span class="text-label-caps font-label-caps text-primary-container">SPECS</span>
+</div>
+<!-- 3 Steps Feature Bento Grid -->
+<div class="space-y-space-sm">
+<!-- Step 1 -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/40 rounded-xl space-y-1 hover:border-primary-container/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-label-caps font-label-caps text-primary-container">STEP 01</span>
+<span class="material-symbols-outlined text-on-surface-variant text-base" data-icon="dataset">dataset</span>
+</div>
+<h4 class="text-title-md font-title-md text-on-surface font-semibold">Feature Engineering</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Combines season goals, assists, minutes, age and position with club strength (league points and goal difference) and the season. Data: Transfermarkt, 5,500+ Premier League player-seasons (2012-2025). The target is log market value.
+          </p>
+</div>
+<!-- Step 2 -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/40 rounded-xl space-y-1 hover:border-primary-container/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-label-caps font-label-caps text-secondary-fixed-dim">STEP 02</span>
+<span class="material-symbols-outlined text-on-surface-variant text-base" data-icon="schema">schema</span>
+</div>
+<h4 class="text-title-md font-title-md text-on-surface font-semibold">Ensemble Random Forest</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            A Random Forest of 200 decision trees captures non-linear effects, such as the premium for playing at a strong club.
+          </p>
+</div>
+<!-- Step 3 -->
+<div class="p-space-md bg-surface-container-low border border-outline-variant/40 rounded-xl space-y-1 hover:border-primary-container/40 transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-label-caps font-label-caps text-primary-container">STEP 03</span>
+<span class="material-symbols-outlined text-on-surface-variant text-base" data-icon="verified">verified</span>
+</div>
+<h4 class="text-title-md font-title-md text-on-surface font-semibold">Out-of-Sample Validation</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+            Trained on seasons 2012-2022 and tested on 2023-2025 (R² 0.75). A time-based split avoids leaking future information. Known weakness: it underestimates young prospects and ageing stars.
+          </p>
+</div>
+</div>
+<!-- Clean GitHub Link Banner / Button -->
+<a class="block p-space-md bg-surface-container-lowest border border-outline-variant/50 rounded-xl hover:border-primary-container/60 transition-all duration-200 group" href="https://github.com/Aryan-4810/pl-player-value-predictor" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-on-surface group-hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="deployed_code">deployed_code</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-semibold flex items-center gap-1.5">
+                Model Code &amp; Weights
+                <span class="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform" data-icon="north_east">north_east</span>
+</div>
+<div class="text-label-caps font-label-caps text-on-surface-variant flex items-center gap-2 mt-0.5">
+<span>VIEW ON GITHUB</span>
+<span>•</span>
+<span>SCIKIT-LEARN</span>
+<span>•</span>
+<span>PYTHON</span>
+</div>
+</div>
+</div>
+</div>
+</a>
+</section>
+</main>
+<!-- Shared Component: Footer -->
+<footer class="mt-space-xl bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="w-full max-w-7xl mx-auto px-margin-mobile md:px-margin py-space-lg flex flex-col md:flex-row justify-between items-center gap-4">
+<!-- Attribution & Telemetry -->
+<div class="flex flex-col items-center md:items-start gap-1 text-center md:text-left">
+<span class="text-title-md font-title-md font-bold text-on-surface">
+          VALUEMETRICS
+        </span>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+          Student project by Aryan. Data: Transfermarkt (Kaggle). Estimates only.
+        </p>
+</div>
+<!-- Footer Navigation Links -->
+<div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-label-caps font-label-caps text-on-surface-variant">
+<a class="hover:text-primary-container transition-colors duration-200" href="#documentation">Documentation</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary-container transition-colors duration-200" href="#telemetry">Model Telemetry</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary-container transition-colors duration-200" href="#repo">GitHub Repository</a>
+<span class="text-outline-variant">•</span>
+<a class="hover:text-primary-container transition-colors duration-200" href="#terms">Terms</a>
+</div>
+</div>
+</footer>
+<!-- Interactive JavaScript Engine for Calculations -->
+<script>
+    let currentPosition = 'Attack';
+
+    function setPosition(pos, btn) {
+      currentPosition = pos;
+      document.getElementById('posSelectedBadge').innerText = pos.toUpperCase();
+      
+      const buttons = document.querySelectorAll('.pos-btn');
+      buttons.forEach(b => {
+        b.className = 'pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 text-on-surface-variant hover:text-on-surface';
+      });
+      btn.className = 'pos-btn py-1.5 px-2 rounded font-label-caps text-label-caps transition-all duration-150 bg-primary-container text-surface-container-lowest font-bold shadow-sm';
+      recalculateValuation();
+    }
+
+    function stepVal(id, delta) {
+      const el = document.getElementById(id);
+      let val = parseInt(el.innerText, 10) + delta;
+      if (val < 0) val = 0;
+      if (val > 45) val = 45;
+      el.innerText = val;
+      recalculateValuation();
+    }
+
+    function updateRange(inputId, displayId, suffix) {
+      const val = document.getElementById(inputId).value;
+      document.getElementById(displayId).innerText = val + suffix;
+      recalculateValuation();
+    }
+
+    function updateRangeWithSign(inputId, displayId, suffix) {
+      const val = parseInt(document.getElementById(inputId).value, 10);
+      const sign = val > 0 ? '+' : '';
+      document.getElementById(displayId).innerText = sign + val + suffix;
+      recalculateValuation();
+    }
+
+    function updateMins() {
+      const mins = parseInt(document.getElementById('minsInput').value, 10);
+      const matches = Math.round(mins / 90);
+      document.getElementById('minsDisplay').innerText = `${mins.toLocaleString()} mins (~${matches} matches)`;
+      recalculateValuation();
+    }
+
+    function updatePts() {
+      const pts = parseInt(document.getElementById('ptsInput').value, 10);
+      let context = 'Midtable';
+      if (pts >= 85) context = 'Title Winner';
+      else if (pts >= 70) context = 'UCL Spot';
+      else if (pts >= 58) context = 'Europa League';
+      else if (pts <= 32) context = 'Relegation Zone';
+      document.getElementById('ptsDisplay').innerText = `${pts} pts (${context})`;
+      recalculateValuation();
+    }
+
+    function updateSeason() {
+      const yr = parseInt(document.getElementById('seasonInput').value, 10);
+      const next = (yr + 1).toString().slice(2);
+      document.getElementById('seasonDisplay').innerText = `${yr}/${next}`;
+      recalculateValuation();
+    }
+
+    let predictTimer = null;
+
+    function recalculateValuation() {
+      clearTimeout(predictTimer);
+      predictTimer = setTimeout(fetchPrediction, 250);
+    }
+
+    async function fetchPrediction() {
+      const valEl = document.getElementById('valuationValue');
+      const payload = {
+        position: currentPosition,
+        age: parseInt(document.getElementById('ageInput').value, 10),
+        goals: parseInt(document.getElementById('goalsVal').innerText, 10),
+        assists: parseInt(document.getElementById('assistsVal').innerText, 10),
+        minutes: parseInt(document.getElementById('minsInput').value, 10),
+        points: parseInt(document.getElementById('ptsInput').value, 10),
+        goal_diff: parseInt(document.getElementById('gdInput').value, 10),
+        season: parseInt(document.getElementById('seasonInput').value, 10)
+      };
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+
+        const m = v => (v / 1e6).toFixed(1);
+        valEl.innerText = `\u20ac${m(data.value_eur)}M`;
+        document.getElementById('rangeBadge').innerHTML =
+          `Typical range: <span class="text-primary-fixed-dim">\u20ac${m(data.low_eur)}M</span> \u2013 <span class="text-secondary-fixed-dim">\u20ac${m(data.high_eur)}M</span>`;
+
+        const v = data.value_eur / 1e6;
+        const tierEl = document.getElementById('tierDisplay');
+        if (v >= 60) tierEl.innerText = 'Very high value tier';
+        else if (v >= 38) tierEl.innerText = 'High value tier';
+        else if (v >= 20) tierEl.innerText = 'Established starter tier';
+        else tierEl.innerText = 'Squad / rotation tier';
+      } catch (err) {
+        valEl.innerText = 'Error';
+        document.getElementById('tierDisplay').innerText = String(err.message || err);
+      }
+    }
+
+    function runPredictionAnimation() {
+      const valEl = document.getElementById('valuationValue');
+      const card = document.getElementById('resultCard');
+      
+      // Flash card highlight
+      card.classList.add('ring-2', 'ring-primary-container');
+      valEl.classList.add('scale-105');
+      
+      setTimeout(() => {
+        card.classList.remove('ring-2', 'ring-primary-container');
+        valEl.classList.remove('scale-105');
+      }, 350);
+      
+      recalculateValuation();
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Initial calculation on render
+    recalculateValuation();
+  </script>
+</body></html>
