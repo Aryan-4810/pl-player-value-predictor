@@ -3,4 +3,6 @@ numpy
 scikit-learn==1.9.1
 matplotlib
 joblib
+flask 
+gunicorn
 requests
